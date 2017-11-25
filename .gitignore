@@ -1,0 +1,36 @@
+# Compiled class file (bytecode)
+*.class
+
+# Log file
+*.log
+
+# Archives
+*.jar
+*.war
+*.ear
+*.zip
+
+# Intellij
+## Project files
+*.iml
+*.ipr
+*.iws
+.idea/
+
+## Compiled binaries
+/out/
+
+
+# Gradle
+.gradletasknamecache
+.gradle/
+build/
+bin/
+
+# Maven files
+target/
+
+# Eclipse project files
+.classpath
+.project
+
