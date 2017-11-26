@@ -6,7 +6,7 @@ import static com.doingfp.desktop.calc.BinaryOperator.*;
 import static com.doingfp.desktop.calc.Constants.CLEAN_DISPLAY;
 import static com.doingfp.desktop.calc.Constants.MAX_DISPLAYED_NUMBERS;
 
-public class Calculator {
+public class CalculatorState {
 
     // todo: use big decimal instead
     final JTextField display;
@@ -14,7 +14,7 @@ public class Calculator {
     double state;
     double memory;
 
-    public Calculator(final JTextField display) {
+    public CalculatorState(final JTextField display) {
         this.display = display;
         allClear();
     }
@@ -27,17 +27,17 @@ public class Calculator {
      * @return - сам объект для возможности совершать дальнейшие
      * композиционные действия
      */
-    public Calculator prepareForBinaryOperation(final BinaryOperator operation) {
+    public CalculatorState prepareForBinaryOperation(final BinaryOperator operation) {
         return setBinaryOperator(operation)
                 .preserveDisplayState().resetDisplay();
     }
 
-    public Calculator setBinaryOperator(final BinaryOperator operator) {
+    public CalculatorState setBinaryOperator(final BinaryOperator operator) {
         this.currentOperator = operator;
         return this;
     }
 
-    public Calculator resetDisplay() {
+    public CalculatorState resetDisplay() {
         display.setText(CLEAN_DISPLAY);
         return this;
     }
@@ -118,12 +118,12 @@ public class Calculator {
         return String.valueOf(state);
     }
 
-    public Calculator setState(final String displayState) {
+    public CalculatorState setState(final String displayState) {
         this.state = Double.parseDouble(displayState);
         return this;
     }
 
-    public Calculator preserveDisplayState() {
+    public CalculatorState preserveDisplayState() {
         setState(display.getText());
         return this;
     }
@@ -133,7 +133,7 @@ public class Calculator {
         return memory;
     }
 
-    public Calculator setMemory(double memory) {
+    public CalculatorState setMemory(double memory) {
         this.memory = memory;
         return this;
     }

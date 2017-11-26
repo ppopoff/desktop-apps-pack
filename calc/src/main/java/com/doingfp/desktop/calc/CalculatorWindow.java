@@ -11,7 +11,7 @@ import static com.doingfp.desktop.calc.Constants.*;
 
 public class CalculatorWindow extends JFrame {
     private JTextField display = new JTextField();
-    private Calculator calculator = new Calculator(display);
+    private CalculatorState calculatorState = new CalculatorState(display);
     private Map<String, JButton> buttons = new HashMap<>();
 
     public static CalculatorWindow create() {
@@ -89,25 +89,25 @@ public class CalculatorWindow extends JFrame {
         buttons.put(ButtonLabels.CLEAR_BUTTON, clearButton);
         clearButton.setFont(DEFAULT_FONT);
         clearButton.setSize(DEFAULT_BUTTON_SIZE);
-        clearButton.addActionListener(evt -> calculator.resetDisplay());
+        clearButton.addActionListener(evt -> calculatorState.resetDisplay());
         panel.add(clearButton);
 
         final JButton backspaceButton = new JButton(ButtonLabels.BACKSPACE_BUTTON);
         buttons.put(ButtonLabels.BACKSPACE_BUTTON, backspaceButton);
         backspaceButton.setFont(DEFAULT_FONT);
-        backspaceButton.addActionListener(evt -> calculator.backspace());
+        backspaceButton.addActionListener(evt -> calculatorState.backspace());
         panel.add(backspaceButton);
 
         final JButton acButton = new JButton(ButtonLabels.ALL_CLEAR_BUTTON);
         buttons.put(ButtonLabels.ALL_CLEAR_BUTTON, acButton);
         acButton.setFont(DEFAULT_FONT);
-        acButton.addActionListener(evt -> calculator.allClear());
+        acButton.addActionListener(evt -> calculatorState.allClear());
         panel.add(acButton);
 
         final JButton msButton = new JButton(ButtonLabels.MEMORY_STORE_BUTTON);
         buttons.put(ButtonLabels.MEMORY_STORE_BUTTON, msButton);
         msButton.setFont(DEFAULT_FONT);
-        msButton.addActionListener(evt -> calculator.memoryStore());
+        msButton.addActionListener(evt -> calculatorState.memoryStore());
         panel.add(msButton);
 
         final JButton openParButton = new JButton(ButtonLabels.OPEN_PAREN_BUTTON);
@@ -121,7 +121,7 @@ public class CalculatorWindow extends JFrame {
         final JButton mcButton = new JButton(ButtonLabels.MEMORY_CLEAN_BUTTON);
         buttons.put(ButtonLabels.MEMORY_CLEAN_BUTTON, mcButton);
         mcButton.setFont(DEFAULT_FONT);
-        mcButton.addActionListener(evt -> calculator.clearMemory());
+        mcButton.addActionListener(evt -> calculatorState.clearMemory());
         panel.add(mcButton);
 
         final JButton closeParButton = new JButton(ButtonLabels.CLOSE_PAREN_BUTTON);
@@ -135,19 +135,19 @@ public class CalculatorWindow extends JFrame {
         final JButton mrButton = new JButton(ButtonLabels.MEMORY_READ_BUTTON);
         buttons.put(ButtonLabels.MEMORY_READ_BUTTON, mrButton);
         mrButton.setFont(DEFAULT_FONT);
-        mrButton.addActionListener(evt -> calculator.readFromMemory());
+        mrButton.addActionListener(evt -> calculatorState.readFromMemory());
         panel.add(mrButton);
 
         final JButton negateButton = new JButton(ButtonLabels.PLUS_MINUS_BUTTON);
         buttons.put(ButtonLabels.PLUS_MINUS_BUTTON, negateButton);
         negateButton.setFont(DEFAULT_FONT);
-        negateButton.addActionListener(evt -> calculator.negate());
+        negateButton.addActionListener(evt -> calculatorState.negate());
         panel.add(negateButton);
 
         final JButton mplusButton = new JButton(ButtonLabels.MEMORY_PLUS_BUTTON);
         buttons.put(ButtonLabels.MEMORY_PLUS_BUTTON, mplusButton);
         mplusButton.setFont(DEFAULT_FONT);
-        mplusButton.addActionListener(evt -> calculator.memoryPlus());
+        mplusButton.addActionListener(evt -> calculatorState.memoryPlus());
         panel.add(mplusButton);
 
         return panel;
@@ -224,7 +224,7 @@ public class CalculatorWindow extends JFrame {
         // % button
         final JButton percentButton = new JButton(ButtonLabels.PERCENT_LABEL);
         percentButton.addActionListener(evt ->
-            calculator.prepareForBinaryOperation(BinaryOperator.PERCENT)
+            calculatorState.prepareForBinaryOperation(BinaryOperator.PERCENT)
         );
         buttons.put(ButtonLabels.PERCENT_LABEL, percentButton);
         percentButton.setFont(DEFAULT_FONT);
@@ -235,7 +235,7 @@ public class CalculatorWindow extends JFrame {
 
         final JButton divisionButton = new JButton(ButtonLabels.DIVISION_LABEL);
         divisionButton.addActionListener(evt ->
-            calculator.prepareForBinaryOperation(BinaryOperator.DIVIDE)
+            calculatorState.prepareForBinaryOperation(BinaryOperator.DIVIDE)
         );
         buttons.put(ButtonLabels.DIVISION_LABEL, divisionButton);
         divisionButton.setFont(DEFAULT_FONT);
@@ -247,7 +247,7 @@ public class CalculatorWindow extends JFrame {
 
         final JButton multiplicationButton = new JButton(ButtonLabels.MULTIPLICATION_LABEL);
         multiplicationButton.addActionListener(evt ->
-            calculator.prepareForBinaryOperation(BinaryOperator.MULTIPLY));
+            calculatorState.prepareForBinaryOperation(BinaryOperator.MULTIPLY));
         buttons.put(ButtonLabels.MULTIPLICATION_LABEL, multiplicationButton);
         multiplicationButton.setFont(DEFAULT_FONT);
         constraints.weightx = 0.5;
@@ -257,7 +257,7 @@ public class CalculatorWindow extends JFrame {
 
         final JButton minusButton = new JButton(ButtonLabels.MINUS_LABEL);
         minusButton.addActionListener(evt ->
-            calculator.prepareForBinaryOperation(BinaryOperator.MINUS));
+            calculatorState.prepareForBinaryOperation(BinaryOperator.MINUS));
         buttons.put(ButtonLabels.MINUS_LABEL, minusButton);
         minusButton.setFont(DEFAULT_FONT);
         constraints.weightx = 0.5;
@@ -305,7 +305,7 @@ public class CalculatorWindow extends JFrame {
         dotButton.addActionListener(evt -> {});
         buttons.put(ButtonLabels.DOT_LABEL, dotButton);
         dotButton.setFont(DEFAULT_FONT);
-        dotButton.addActionListener(e -> calculator.addDecimalSeparator());
+        dotButton.addActionListener(e -> calculatorState.addDecimalSeparator());
         constraints.weightx = 0.5;
         constraints.gridx = 2;
         constraints.gridy = 5;
@@ -314,7 +314,7 @@ public class CalculatorWindow extends JFrame {
 
         // = button
         final JButton equalsButton = new JButton(ButtonLabels.EQUALS_LABEL);
-        equalsButton.addActionListener(evt -> calculator.equalsPressed());
+        equalsButton.addActionListener(evt -> calculatorState.equalsPressed());
         buttons.put(ButtonLabels.EQUALS_LABEL, equalsButton);
         equalsButton.setFont(DEFAULT_FONT);
         constraints.weightx = 0.5;
@@ -328,7 +328,7 @@ public class CalculatorWindow extends JFrame {
         // + button
         final JButton plusButton = new JButton(ButtonLabels.PLUS_LABEL);
         plusButton.addActionListener(evt ->
-            calculator.prepareForBinaryOperation(BinaryOperator.PLUS));
+            calculatorState.prepareForBinaryOperation(BinaryOperator.PLUS));
         buttons.put(ButtonLabels.PLUS_LABEL, equalsButton);
         plusButton.setFont(DEFAULT_FONT);
         constraints.weightx = 0.5;
@@ -346,7 +346,7 @@ public class CalculatorWindow extends JFrame {
         final JButton button = new JButton(numberLabel);
         button.setFont(DEFAULT_FONT);
         button.addActionListener(evt ->
-            calculator.appendDigitToDisplay(numberLabel));
+            calculatorState.appendDigitToDisplay(numberLabel));
         button.setMnemonic(buttonKey);
         return button;
     }
