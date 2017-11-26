@@ -1,41 +1,21 @@
-//apply plugin: 'application'
-
 version 0.1
 
 mainClassName = 'com.doingfp.desktop.picview.Application'
 
 startScripts {
-  mainClassName "$mainClassName"
+    mainClassName "$mainClassName"
 }
 
 jar {
-  zip64 = true
+    zip64 = true
 
-  manifest {
-    attributes 'Implementation-Title': 'Calculator Application',
-               'Implementation-Version': version,
-               'Main-Class': mainClassName
-  }
+    manifest {
+        attributes 'Implementation-Title': 'Calculator Application',
+                   'Implementation-Version': version,
+                   'Main-Class': mainClassName
+    }
 
-  from {
-    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-  }
-}
-
-// To avoid default maven layout
-// sourceSets.main.java.srcDirs = ['src']
-
-/*
-task dist(type: Zip) {
-    dependsOn spiJar
-    from 'src/dist'
-    into('libs') {
-        from spiJar.archivePath
-        from configurations.runtime
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
-
-artifacts {
-   archives dist
-}
-*/
