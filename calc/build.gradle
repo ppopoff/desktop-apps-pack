@@ -1,5 +1,3 @@
-//apply plugin: 'application'
-
 version 0.2
 
 mainClassName = 'com.doingfp.desktop.calc.Application'
@@ -21,21 +19,3 @@ jar {
     configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
   }
 }
-
-// To avoid default maven layout
-// sourceSets.main.java.srcDirs = ['src']
-
-/*
-task dist(type: Zip) {
-    dependsOn spiJar
-    from 'src/dist'
-    into('libs') {
-        from spiJar.archivePath
-        from configurations.runtime
-    }
-}
-
-artifacts {
-   archives dist
-}
-*/
