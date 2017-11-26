@@ -1,0 +1,21 @@
+version 0.1
+
+mainClassName = 'com.doingfp.desktop.texted.Application'
+
+startScripts {
+    mainClassName "$mainClassName"
+}
+
+jar {
+    zip64 = true
+
+    manifest {
+        attributes 'Implementation-Title': 'Calculator Application',
+                   'Implementation-Version': version,
+                   'Main-Class': mainClassName
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
