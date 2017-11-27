@@ -3,6 +3,7 @@ package com.doingfp.desktop.calc;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,62 +15,67 @@ public class CalculatorWindow extends JFrame {
     private CalculatorState calculatorState = new CalculatorState(display);
     private Map<String, JButton> buttons = new HashMap<>();
 
+    public Map<String, JButton> getButtons() {
+        return Collections.unmodifiableMap(buttons);
+    }
+
     public static CalculatorWindow create() {
         return new CalculatorWindow();
     }
 
     private CalculatorWindow() {
-        initWindow();
-        initComponents();
+        // Инициализируем, только если находимся внутри Dispatch thread
+        if (SwingUtilities.isEventDispatchThread())
+            initComponents();
     }
 
-    private void initWindow() {
+    private void initComponents() {
+        setJMenuBar(createMenuBar());
+
+        // Главное установить раслкадку до того как мы будем что-либо
+        // куда-либо добавлять
+        setLayout(new GridBagLayout());
+        final GridBagConstraints mainPanelConstraints = new GridBagConstraints();
+
+        // setup display and put it to the right position
+        createDisplay();
+        mainPanelConstraints.fill = GridBagConstraints.HORIZONTAL;
+        mainPanelConstraints.weightx = 0.5;
+        mainPanelConstraints.gridx = 0;
+        mainPanelConstraints.gridy = 0;
+        mainPanelConstraints.gridwidth = 3; // у нас три панели с кнопками
+        add(display, mainPanelConstraints);
+
+        final JPanel numberSystemsPanel = initNumeralSystemPanel();
+        mainPanelConstraints.fill = GridBagConstraints.HORIZONTAL;
+        mainPanelConstraints.weightx = 0.5;
+        mainPanelConstraints.gridx = 0;
+        mainPanelConstraints.gridy = 1;
+        mainPanelConstraints.gridwidth = 2;
+        add(numberSystemsPanel, mainPanelConstraints);
+
+        mainPanelConstraints.fill = GridBagConstraints.BOTH;
+
+        // tools like C , -> , shift and etc
+        final JPanel toolsPanel = initToolPanel();
+        mainPanelConstraints.weightx = 0.5;
+        mainPanelConstraints.gridx = 0;
+        mainPanelConstraints.gridy = 2;
+        mainPanelConstraints.gridwidth = 1;
+        add(toolsPanel, mainPanelConstraints);
+
+        // Setting up numeric panel
+        final JPanel standardPanel = initStandardPanel();
+        mainPanelConstraints.weightx = 0.5;
+        mainPanelConstraints.gridx = 2;
+        mainPanelConstraints.gridy = 2;
+        mainPanelConstraints.gridwidth = 1;
+        add(standardPanel, mainPanelConstraints);
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(WINDOW_SIZE);
         setPreferredSize(WINDOW_SIZE);
         setResizable(true);
-    }
-
-    private void initComponents() {
-        // Главное установить раслкадку до того как мы будем что-либо
-        // куда-либо добавлять
-        rootPane.setLayout(new GridBagLayout());
-        final GridBagConstraints rootPaneConstraints = new GridBagConstraints();
-
-        // setup display and put it to the right position
-        createDisplay();
-        rootPaneConstraints.fill = GridBagConstraints.HORIZONTAL;
-        rootPaneConstraints.weightx = 0.5;
-        rootPaneConstraints.gridx = 0;
-        rootPaneConstraints.gridy = 0;
-        rootPaneConstraints.gridwidth = 3; // у нас три панели с кнопками
-        rootPane.add(display, rootPaneConstraints);
-
-        final JPanel numberSystemsPanel = initNumeralSystemPanel();
-        rootPaneConstraints.fill = GridBagConstraints.HORIZONTAL;
-        rootPaneConstraints.weightx = 0.5;
-        rootPaneConstraints.gridx = 0;
-        rootPaneConstraints.gridy = 1;
-        rootPaneConstraints.gridwidth = 2; // у нас три панели с кнопками
-        rootPane.add(numberSystemsPanel, rootPaneConstraints);
-
-        rootPaneConstraints.fill = GridBagConstraints.BOTH;
-
-        // Setting up numeric panel
-        final JPanel standardPanel = initStandardPanel();
-        rootPaneConstraints.weightx = 0.5;
-        rootPaneConstraints.gridx = 0;
-        rootPaneConstraints.gridy = 2;
-        rootPaneConstraints.gridwidth = 1; // у нас три панели с кнопками
-        rootPane.add(standardPanel, rootPaneConstraints);
-
-        // tools like C , -> , shift and etc
-        final JPanel toolsPanel = initToolPanel();
-        rootPaneConstraints.weightx = 0.5;
-        rootPaneConstraints.gridx = 2;
-        rootPaneConstraints.gridy = 2;
-        rootPaneConstraints.gridwidth = 1; // у нас три панели с кнопками
-        rootPane.add(toolsPanel, rootPaneConstraints);
 
         pack();
     }
@@ -349,5 +355,57 @@ public class CalculatorWindow extends JFrame {
             calculatorState.appendDigitToDisplay(numberLabel));
         button.setMnemonic(buttonKey);
         return button;
+    }
+
+
+    private JMenuBar createMenuBar() {
+        final JMenuBar menuBar = new JMenuBar();
+
+        // file menu
+        final JMenu fileMenu = new JMenu("File");
+        final JMenuItem quit = fileMenu.add("Quit");
+        quit.addActionListener(evt -> System.exit(0));
+        fileMenu.add(quit);
+        menuBar.add(fileMenu);
+
+        // edit menu
+        final JMenu editMenu = new JMenu("Edit");
+        final JMenuItem undo = new JMenuItem("Undo");
+        final JMenuItem redo = new JMenuItem("Redo");
+        final JMenuItem cut = new JMenuItem("Cut");
+        final JMenuItem copy = new JMenuItem("Copy");
+        final JMenuItem paste = new JMenuItem("Paste");
+
+        editMenu.add(undo);
+        editMenu.add(redo);
+        editMenu.addSeparator();
+        editMenu.add(cut);
+        editMenu.add(copy);
+        editMenu.add(paste);
+        menuBar.add(editMenu);
+
+        // view menu
+        final JMenu viewMenu = new JMenu("View");
+        final JMenuItem basicMode = new JRadioButtonMenuItem("Basic", true);
+        final JMenuItem programmingMode = new JRadioButtonMenuItem("Programming");
+        final JMenuItem scientificMode = new JRadioButtonMenuItem("Scientific");
+
+        final ButtonGroup modesButtonGroup = new ButtonGroup();
+        modesButtonGroup.add(basicMode);
+        modesButtonGroup.add(programmingMode);
+        modesButtonGroup.add(scientificMode);
+
+
+        viewMenu.add(basicMode);
+        viewMenu.add(programmingMode);
+        viewMenu.add(scientificMode);
+        menuBar.add(viewMenu);
+
+
+        // todo: add @About jdialog pane
+        final JMenu aboutMenu = new JMenu("About");
+        menuBar.add(aboutMenu);
+
+        return menuBar;
     }
 }
