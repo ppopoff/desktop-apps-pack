@@ -8,7 +8,8 @@ public class Constants {
     public static Font DEFAULT_FONT = new Font("Consolas", Font.PLAIN, 20);
 
     // Параметры окна
-    public static Dimension WINDOW_SIZE = new Dimension(400, 420);
+    private static int WINDOW_HEIGHT = 315;
+    public static Dimension WINDOW_SIZE = new Dimension(400, WINDOW_HEIGHT);
 
     // Дисплей
     public static int MAX_DISPLAYED_NUMBERS = 19;
