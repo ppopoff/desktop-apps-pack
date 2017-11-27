@@ -1,5 +1,7 @@
 package com.doingfp.desktop.calc;
 
+import com.doingfp.desktop.calc.numeral.NumeralSystemPanel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -20,13 +22,15 @@ public class CalculatorWindow extends JFrame {
     }
 
     public static CalculatorWindow create() {
-        return new CalculatorWindow();
+        final CalculatorWindow window = new CalculatorWindow();
+        return window;
     }
 
     private CalculatorWindow() {
         // Инициализируем, только если находимся внутри Dispatch thread
-        if (SwingUtilities.isEventDispatchThread())
+        if (SwingUtilities.isEventDispatchThread()) {
             initComponents();
+        }
     }
 
     private void initComponents() {
@@ -46,7 +50,7 @@ public class CalculatorWindow extends JFrame {
         mainPanelConstraints.gridwidth = 3; // у нас три панели с кнопками
         add(display, mainPanelConstraints);
 
-        final JPanel numberSystemsPanel = initNumeralSystemPanel();
+        final JPanel numberSystemsPanel = new NumeralSystemPanel(buttons, display);
         mainPanelConstraints.fill = GridBagConstraints.HORIZONTAL;
         mainPanelConstraints.weightx = 0.5;
         mainPanelConstraints.gridx = 0;
@@ -159,57 +163,17 @@ public class CalculatorWindow extends JFrame {
         return panel;
     }
 
+    private JButton createHexPanel(final char number) {
+        if (number < 'A' || number > 'F' || Character.isLowerCase(number)) {
+            throw new UnsupportedOperationException("Not in hex number range, or lowerecased");
+        }
 
-    private JPanel initNumeralSystemPanel() {
-        final JPanel panel = new JPanel();
-        final ButtonGroup numberSystemButtonGroup = new ButtonGroup();
-
-        final JRadioButton hex = new JRadioButton("Hex");
-        //todo: no hex buttons created        hex.addActionListener();
-
-
-        final JRadioButton dec = new JRadioButton("Dec", true);
-        dec.addActionListener(evt -> {
-            for (int button = 2; button <= 9; ++button) {
-                buttons.get(String.valueOf(button)).setEnabled(true);
-            }
-        });
-
-        // todo: Поменять режим объекту калькулятора
-        final JRadioButton oct = new JRadioButton("Oct");
-        oct.addActionListener(evt -> {
-            // Отключаем кнопки
-            buttons.get("8").setEnabled(false);
-            buttons.get("9").setEnabled(false);
-
-            // Кнопки 1 и 0 никогда не отключаются
-            for (int button = 2; button <= 7; ++button) {
-                buttons.get(String.valueOf(button)).setEnabled(true);
-            }
-        });
-
-        final JRadioButton bin = new JRadioButton("Bin");
-        oct.addActionListener(evt -> {
-            // Отключаем все кроме 1 и 0
-            for (int button = 2; button <= 9; ++button) {
-                buttons.get(String.valueOf(button)).setEnabled(false);
-            }
-        });
-
-        // Для того чтобы RadioButton были взаимоисключающими
-        numberSystemButtonGroup.add(hex);
-        numberSystemButtonGroup.add(dec);
-        numberSystemButtonGroup.add(oct);
-        numberSystemButtonGroup.add(bin);
-
-        panel.setLayout(new GridLayout(0, 4));
-
-        panel.add(hex);
-        panel.add(dec);
-        panel.add(oct);
-        panel.add(bin);
-
-        return panel;
+        final String numberLabel = String.valueOf(number);
+        final JButton button = new JButton(numberLabel);
+        button.setFont(DEFAULT_FONT);
+        button.addActionListener(evt ->
+            calculatorState.appendDigitToDisplay(numberLabel));
+        return button;
     }
 
     /**
