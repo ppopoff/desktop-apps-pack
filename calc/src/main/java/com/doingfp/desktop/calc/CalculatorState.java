@@ -13,6 +13,7 @@ public class CalculatorState {
     BinaryOperator currentOperator;
     double state;
     double memory;
+    private boolean shouldResetDisplay = false; // defines when display must be reset
 
     public CalculatorState(final JTextField display) {
         this.display = display;
@@ -38,6 +39,7 @@ public class CalculatorState {
     }
 
     public CalculatorState resetDisplay() {
+        shouldResetDisplay = false;
         display.setText(CLEAN_DISPLAY);
         return this;
     }
@@ -78,6 +80,7 @@ public class CalculatorState {
 
     public void equalsPressed() {
         // read display value
+        shouldResetDisplay = true;
         switch (currentOperator) {
             case NONE: {
                 break;
@@ -140,9 +143,10 @@ public class CalculatorState {
 
     public void appendDigitToDisplay(final String digit) {
         if (currentlyDisplayedNumbersCount() <= MAX_DISPLAYED_NUMBERS)
-            if (getDisplayedNumber() == 0)
+            if (shouldResetDisplay || getDisplayedNumber() == 0) {
                 display.setText(digit);
-            else
+                shouldResetDisplay = false;
+            } else
                 display.setText(display.getText() + digit);
     }
 
