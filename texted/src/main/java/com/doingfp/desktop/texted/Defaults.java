@@ -1,4 +1,4 @@
-package com.doingfp.desktop.picview;
+package com.doingfp.desktop.texted;
 
 import java.awt.Dimension;
 import java.awt.Font;

@@ -1,4 +1,4 @@
-package com.doingfp.desktop.picview;
+package com.doingfp.desktop.texted;
 
 import java.io.IOException;
 import java.nio.charset.Charset;

@@ -1,4 +1,4 @@
-package com.doingfp.desktop.picview;
+package com.doingfp.desktop.texted;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -66,8 +66,6 @@ public class EditorFrame extends JFrame {
         textArea.getDocument().addUndoableEditListener(undoManager);
 
         textArea.setSize(window.getWidth(), window.getHeight());
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
         textArea.setEditable(true);
         textArea.setFont(Defaults.DEFAULT_FONT);
     }
